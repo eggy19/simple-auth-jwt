@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../../utils/jwt';
 import { createUser, findByUsername } from '../../models/user.model';
@@ -35,7 +35,7 @@ export const register = async (req:Request, res : Response): Promise<void> => {
   }
 }
 
-export const login = async (req: Request, res: Response): Promise<void> => {
+export const login = async (req: Request, res: Response, next:NextFunction): Promise<void> => {
   const { username, password } = req.body;
 
   try {
@@ -59,7 +59,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({ token, msg:'sukses login dan mendapatkan token' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+    next(error);
   }
 };
 
